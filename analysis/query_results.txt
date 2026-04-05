@@ -1,0 +1,127 @@
+ time | device_name | cpu_usage | memory_usage | temperature | status 
+------+-------------+-----------+--------------+-------------+--------
+(0 rows)
+
+ device_name |      max_temp      
+-------------+--------------------
+ device-006  |   65.2466018228746
+ device-013  | 62.549537203519506
+ device-022  | 60.613736961593844
+ device-027  | 60.610999789079344
+ device-034  | 60.366433417045286
+(5 rows)
+
+invalid command \SELECT
+ device_name | errors | total | error_rate_pct 
+-------------+--------+-------+----------------
+ device-049  |      6 |   259 |           2.32
+ device-006  |      5 |   259 |           1.93
+ device-028  |      5 |   259 |           1.93
+ device-042  |      5 |   259 |           1.93
+ device-001  |      5 |   259 |           1.93
+ device-045  |      5 |   259 |           1.93
+ device-048  |      5 |   259 |           1.93
+ device-034  |      5 |   259 |           1.93
+ device-029  |      4 |   259 |           1.54
+ device-009  |      4 |   259 |           1.54
+ device-047  |      4 |   259 |           1.54
+ device-010  |      4 |   259 |           1.54
+ device-014  |      4 |   259 |           1.54
+ device-041  |      4 |   259 |           1.54
+ device-003  |      4 |   259 |           1.54
+ device-043  |      4 |   259 |           1.54
+ device-013  |      4 |   259 |           1.54
+ device-002  |      4 |   259 |           1.54
+ device-027  |      4 |   259 |           1.54
+ device-040  |      4 |   259 |           1.54
+ device-016  |      3 |   259 |           1.16
+ device-030  |      3 |   259 |           1.16
+ device-008  |      3 |   259 |           1.16
+ device-025  |      3 |   259 |           1.16
+ device-012  |      3 |   259 |           1.16
+ device-007  |      3 |   259 |           1.16
+ device-017  |      3 |   259 |           1.16
+ device-031  |      3 |   259 |           1.16
+ device-039  |      3 |   259 |           1.16
+ device-024  |      3 |   259 |           1.16
+ device-036  |      3 |   259 |           1.16
+ device-022  |      3 |   259 |           1.16
+ device-023  |      3 |   259 |           1.16
+ device-046  |      3 |   259 |           1.16
+ device-005  |      3 |   259 |           1.16
+ device-015  |      2 |   259 |           0.77
+ device-033  |      2 |   259 |           0.77
+ device-021  |      2 |   259 |           0.77
+ device-026  |      2 |   259 |           0.77
+ device-018  |      2 |   259 |           0.77
+ device-032  |      2 |   259 |           0.77
+ device-004  |      2 |   259 |           0.77
+ device-044  |      2 |   259 |           0.77
+ device-020  |      2 |   259 |           0.77
+ device-035  |      1 |   259 |           0.39
+ device-011  |      1 |   259 |           0.39
+ device-050  |      1 |   259 |           0.39
+ device-038  |      1 |   259 |           0.39
+ device-019  |      1 |   259 |           0.39
+ device-037  |      0 |   259 |           0.00
+(50 rows)
+
+ERROR:  syntax error at or near "bucket"
+LINE 1: bucket,
+        ^
+                                                                 QUERY PLAN                                                                  
+---------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=1509.64..1510.14 rows=200 width=16) (actual time=14.649..14.656 rows=73 loops=1)
+   Sort Key: (time_bucket('01:00:00'::interval, device_metrics."time"))
+   Sort Method: quicksort  Memory: 27kB
+   ->  Finalize HashAggregate  (cost=1499.00..1502.00 rows=200 width=16) (actual time=14.517..14.527 rows=73 loops=1)
+         Group Key: (time_bucket('01:00:00'::interval, device_metrics."time"))
+         Batches: 1  Memory Usage: 48kB
+         ->  Custom Scan (ChunkAppend) on device_metrics  (cost=0.00..1495.00 rows=800 width=40) (actual time=3.362..14.471 rows=73 loops=1)
+               Chunks excluded during startup: 0
+               ->  Partial HashAggregate  (cost=271.50..274.00 rows=200 width=40) (actual time=3.362..3.364 rows=14 loops=1)
+                     Group Key: time_bucket('01:00:00'::interval, _hyper_1_1_chunk."time")
+                     Batches: 1  Memory Usage: 40kB
+                     ->  Seq Scan on _hyper_1_1_chunk  (cost=0.00..232.00 rows=7900 width=16) (actual time=0.020..2.642 rows=7900 loops=1)
+                           Filter: ("time" >= (now() - '7 days'::interval))
+               ->  Partial HashAggregate  (cost=495.00..497.50 rows=200 width=40) (actual time=5.833..5.836 rows=24 loops=1)
+                     Group Key: time_bucket('01:00:00'::interval, _hyper_1_2_chunk."time")
+                     Batches: 1  Memory Usage: 40kB
+                     ->  Seq Scan on _hyper_1_2_chunk  (cost=0.00..423.00 rows=14400 width=16) (actual time=0.024..4.533 rows=14400 loops=1)
+                           Filter: ("time" >= (now() - '7 days'::interval))
+               ->  Partial HashAggregate  (cost=495.00..497.50 rows=200 width=40) (actual time=3.956..3.958 rows=24 loops=1)
+                     Group Key: time_bucket('01:00:00'::interval, _hyper_1_3_chunk."time")
+                     Batches: 1  Memory Usage: 40kB
+                     ->  Seq Scan on _hyper_1_3_chunk  (cost=0.00..423.00 rows=14400 width=16) (actual time=0.031..2.767 rows=14400 loops=1)
+                           Filter: ("time" >= (now() - '7 days'::interval))
+               ->  Partial HashAggregate  (cost=223.50..226.00 rows=200 width=40) (actual time=1.300..1.301 rows=11 loops=1)
+                     Group Key: time_bucket('01:00:00'::interval, _hyper_1_4_chunk."time")
+                     Batches: 1  Memory Usage: 40kB
+                     ->  Seq Scan on _hyper_1_4_chunk  (cost=0.00..191.00 rows=6500 width=16) (actual time=0.007..0.838 rows=6500 loops=1)
+                           Filter: ("time" >= (now() - '7 days'::interval))
+ Planning Time: 2.189 ms
+ Execution Time: 15.035 ms
+(30 rows)
+
+                                                                                              QUERY PLAN                                                                                               
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=0.28..147.27 rows=200 width=16) (actual time=0.193..2.120 rows=73 loops=1)
+   Group Key: _materialized_hypertable_2.bucket
+   ->  Custom Scan (ChunkAppend) on _materialized_hypertable_2  (cost=0.28..126.48 rows=3659 width=16) (actual time=0.128..1.846 rows=3650 loops=1)
+         Order: _materialized_hypertable_2.bucket
+         Chunks excluded during startup: 0
+         ->  Index Scan Backward using _hyper_2_5_chunk__materialized_hypertable_2_bucket_idx on _hyper_2_5_chunk  (cost=0.28..126.48 rows=3659 width=16) (actual time=0.128..1.674 rows=3650 loops=1)
+               Index Cond: (bucket >= (now() - '7 days'::interval))
+ Planning Time: 1.151 ms
+ Execution Time: 2.182 ms
+(9 rows)
+
+BEGIN
+INSERT 0 1
+ERROR:  insert or update on table "_hyper_1_4_chunk" violates foreign key constraint "4_4_device_metrics_device_id_fkey"
+DETAIL:  Key (device_id)=(99999) is not present in table "devices".
+ROLLBACK
+ device_id | device_name | device_type | location | installed_at 
+-----------+-------------+-------------+----------+--------------
+(0 rows)
+
