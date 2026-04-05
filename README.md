@@ -1,5 +1,4 @@
-# IoT Timeseries Monitor
-
+# IoT Telemetry Analytics Platform
 A database engineering project built with PostgreSQL and TimescaleDB to simulate real-world device telemetry ingestion and analytics.
 This system models a fleet of devices sending CPU, memory, temperature, and status metrics into a time-series database running in Docker. It demonstrates schema design, hypertables, continuous aggregates, indexing, analytical SQL, query-plan analysis with EXPLAIN ANALYZE, transaction integrity, and Python integration with psycopg2.
 The goal of this project is to show practical database engineering skills in a production-style setup: storing high-volume time-series data efficiently, querying it with SQL, and analyzing performance using PostgreSQL and TimescaleDB features.
